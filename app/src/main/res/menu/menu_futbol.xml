@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_insertar"
-        android:title="Insertar"
+        android:title="Insertar data"
         app:showAsAction="never"/>
     <item
         android:id="@+id/menu_prueba"

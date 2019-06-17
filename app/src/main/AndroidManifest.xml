@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
-            android:name=".JugadoresContentProvider"
+            android:name=".data.FutbolProvider"
             android:authorities="com.example.contentproviderprueba"
             android:enabled="true"/>
 
