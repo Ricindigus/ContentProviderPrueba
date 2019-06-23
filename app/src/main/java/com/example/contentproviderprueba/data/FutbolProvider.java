@@ -47,7 +47,7 @@ public class FutbolProvider extends ContentProvider {
                         selectionArgs, null, null, sortOrder);
                 break;
             case JUGADORES_ID:
-                selection = FutbolContract.JugadoresEntry.COLUMN_ID;
+                selection = FutbolContract.JugadoresEntry.COLUMN_ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = sqLiteDatabase.query(
                         FutbolContract.JugadoresEntry.TABLE_NAME, projection, selection,
@@ -56,6 +56,8 @@ public class FutbolProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
+        if (cursor != null)
+            cursor.setNotificationUri(getContext().getContentResolver(),uri);
         return cursor;
     }
 
@@ -68,8 +70,6 @@ public class FutbolProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
-
-
     }
 
     private Uri insertJugador(Uri uri, ContentValues values) {
@@ -97,6 +97,9 @@ public class FutbolProvider extends ContentProvider {
 
         SQLiteDatabase sqLiteDatabase = futbolHelper.getWritableDatabase();
         long id = sqLiteDatabase.insert(FutbolContract.JugadoresEntry.TABLE_NAME, null, values);
+        if (id != -1)
+            getContext().getContentResolver().notifyChange(uri, null);
+
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -151,23 +154,34 @@ public class FutbolProvider extends ContentProvider {
         SQLiteDatabase sqLiteDatabase = futbolHelper.getWritableDatabase();
         selection = JugadoresEntry.COLUMN_ID + "=?";
         selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-        return sqLiteDatabase.update(JugadoresEntry.TABLE_NAME, values, selection, selectionArgs);
+        int rowsAffected = sqLiteDatabase.update(JugadoresEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (rowsAffected != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+        return rowsAffected;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int match = sUriMatcher.match(uri);
-        SQLiteDatabase sqLiteDatabase = futbolHelper.getWritableDatabase();
+
         switch (match) {
             case JUGADORES:
-                return sqLiteDatabase.delete(JugadoresEntry.TABLE_NAME, null, null);
+                return deleteJugador(uri,JugadoresEntry.TABLE_NAME, null, null);
             case JUGADORES_ID:
                 selection = JugadoresEntry.COLUMN_ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return sqLiteDatabase.delete(JugadoresEntry.TABLE_NAME, selection, selectionArgs);
+                return deleteJugador(uri,JugadoresEntry.TABLE_NAME, selection, selectionArgs);
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
+    }
+
+    private int deleteJugador(Uri uri,String table, String selection, String[] selectionArgs) {
+        SQLiteDatabase sqLiteDatabase = futbolHelper.getWritableDatabase();
+        int rowsAffected = sqLiteDatabase.delete(table, selection, selectionArgs);
+        if (rowsAffected != 0)
+            getContext().getContentResolver().notifyChange(uri,null);
+        return rowsAffected;
     }
 
     @Override

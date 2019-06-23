@@ -2,12 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_insertar"
-        android:title="Insertar data"
-        app:showAsAction="never"/>
-    <item
         android:id="@+id/menu_prueba"
-        android:title="Datos prueba"
+        android:title="Insertar dato prueba"
         app:showAsAction="never"/>
     <item
         android:id="@+id/menu_delete_all"

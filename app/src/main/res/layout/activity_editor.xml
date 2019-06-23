@@ -1,9 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
     tools:context=".EditorActivity">
-
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/tvNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="nombre"/>
+    <EditText
+        android:id="@+id/tvClub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="club"/>
+    <EditText
+        android:id="@+id/tvPais"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="pais"/>
+    <EditText
+        android:id="@+id/tvEdad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="edad"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="guardar"
+        android:onClick="updateOrSave"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>

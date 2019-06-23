@@ -13,7 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.contentproviderprueba.data.FutbolContract.JugadoresEntry;
 
@@ -21,11 +24,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     ListView lvJugadores;
     JugadoresCursorAdapter jugadoresCursorAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lvJugadores = findViewById(R.id.futbol_lvJugadores);
+        lvJugadores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Uri contentUri = Uri.withAppendedPath(JugadoresEntry.CONTENT_URI,String.valueOf(id));
+                Intent intent = new Intent(MainActivity.this,EditorActivity.class);
+                intent.setData(contentUri);
+                startActivity(intent);
+            }
+        });
         jugadoresCursorAdapter = new JugadoresCursorAdapter(this,null);
         lvJugadores.setAdapter(jugadoresCursorAdapter);
         getLoaderManager().initLoader(0,null,this);
@@ -41,18 +54,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
-            case R.id.menu_insertar:
-                startActivity(new Intent(MainActivity.this,EditorActivity.class));
-                return true;
             case R.id.menu_prueba:
-                //TODO insertar data prueba
                 insertarDataPrueba();
                 return true;
             case R.id.menu_delete_all:
-                //TODO eliminar all data
+                deleteAll();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAll() {
+        int rowsAffected = getContentResolver().delete(JugadoresEntry.CONTENT_URI,null,null);
+        if (rowsAffected != 0)
+            Toast.makeText(this, "eliminacion exitosa", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Error al eliminar todos", Toast.LENGTH_SHORT).show();
     }
 
     public void insertarDataPrueba(){
@@ -86,5 +103,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
         jugadoresCursorAdapter.swapCursor(null);
+    }
+
+    public void insertData(View view) {
+        Intent intent = new Intent(MainActivity.this,EditorActivity.class);
+        startActivity(intent);
     }
 }
